@@ -22,6 +22,12 @@ export const VideoCarousel: React.FC = () => {
   const { isEnd, startPlay, videoId, isLastVideo, isPlaying } = video;
 
   useGSAP(() => {
+    gsap.to('#slider', {
+      transform: `translateX(${-100 * videoId}%)`,
+      duration: 2,
+      ease: 'power2.inOut',
+    });
+
     gsap.to('#video', {
       scrollTrigger: {
         trigger: '#video',
@@ -42,9 +48,6 @@ export const VideoCarousel: React.FC = () => {
       }
     }
   }, [startPlay, videoId, isPlaying, loadedData]);
-
-  const handleLoadedMetadata = (index: number, event: any) =>
-    setLoadedData((pre: any) => [...pre, event]);
 
   useEffect(() => {
     let currentProgress = 0;
@@ -87,22 +90,21 @@ export const VideoCarousel: React.FC = () => {
       }
 
       const animUpdate = () => {
-        anim.progress(videoDivRef.current[videoId] / hightlightsSlides[videoId].videoDuration);
+        anim.progress(videoRef.current[videoId].currentTime / hightlightsSlides[videoId].videoDuration);
       };
-  
+
       if (isPlaying) {
-        gsap.ticker.add(animUpdate)
+        gsap.ticker.add(animUpdate);
       } else {
-        gsap.ticker.remove(animUpdate)
+        gsap.ticker.remove(animUpdate);
       }
     }
-    
   }, [videoId, startPlay]);
 
   const handleProcess = (type: string, index?: number) => {
     switch (type) {
       case 'video-end':
-        setVideo((pre) => ({ ...pre, isEnd: true, videoId: index || videoId + 1 }));
+        setVideo((pre) => ({ ...pre, isEnd: true, videoId: videoId + 1 }));
         break;
 
       case 'video-last':
@@ -117,9 +119,17 @@ export const VideoCarousel: React.FC = () => {
         setVideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }));
         break;
 
+        case 'pause':
+        setVideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }));
+        break;
+
       default:
         return video;
     }
+  };
+
+  const handleLoadedMetadata = (index: number, event: any) => {
+    setLoadedData((pre: any) => [...pre, event]);
   };
 
   return (
@@ -134,7 +144,13 @@ export const VideoCarousel: React.FC = () => {
                   playsInline={true}
                   preload="auto"
                   muted
+                  className={`${
+                    list.id === 2 && 'translate-x-44' 
+                  } pointer-events-none`}
                   ref={(el: any) => (videoRef.current[index] = el)}
+                  onEnded={() =>
+                    index !== 3 ? handleProcess('video-end', index) : handleProcess('video-last')
+                  }
                   onPlay={() => setVideo((prevVideo) => ({ ...prevVideo, isPlaying: true }))}
                   onLoadedMetadata={(event) => handleLoadedMetadata(index, event)}>
                   <source src={list.video} type="video/mp4" />
@@ -162,12 +178,13 @@ export const VideoCarousel: React.FC = () => {
               className="mx-2 w-3 h-3 bg-gray-200 rounded-full relative cursor-pointer">
               <span
                 className="absolute h-full w-full rounded-full"
-                ref={(el: any) => (videoSpanRef.current[index] = el)}></span>
+                ref={(el: any) => (videoSpanRef.current[index] = el)}
+              />
             </span>
           ))}
         </div>
 
-        <button className="ml-4 p-4 rounded-full bg-gray-300 backdrop-blur flex items-center justify-center">
+        <button className="ml-4 p-4 rounded-full bg-gray-300 backdrop-blur flex items-center justify-center cursor-pointer">
           <img
             src={isLastVideo ? replayImg : !isPlaying ? playImg : pauseImg}
             alt={isLastVideo ? 'replay' : !isPlaying ? 'play' : 'pause'}

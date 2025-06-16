@@ -32,7 +32,7 @@ export const Hero: React.FC = () => {
         <p
           id="hero"
           className="text-center font-semibold text-3xl text-gray-100 opacity-0 max-md:mb-10">
-          Iphone 16 Pro
+          Iphone 15 Pro
         </p>
 
         <div className="md:w-10/12 w-9/12">
