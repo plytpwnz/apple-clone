@@ -1,6 +1,23 @@
 import type React from 'react';
 import * as THREE from 'three';
 
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/all';
+
+gsap.registerPlugin(ScrollTrigger);
+
+export const animateWithGsap = (target: string, animationProps: any, scrollProps?: any) => {
+  gsap.to(target, {
+    ...animationProps,
+    scrollTrigger: {
+      trigger: target,
+      toggleActions: 'restart reverse restart reverse',
+      start: 'top 85%',
+      ...scrollProps,
+    },
+  });
+};
+
 export const animateWithGsapTimeLine = (
   timeline: any,
   rotationRef: React.RefObject<THREE.Group>,
@@ -22,7 +39,7 @@ export const animateWithGsapTimeLine = (
       ease: 'power2.inOut',
     },
     '<',
-  )
+  );
 
   timeline.to(
     secondTarget,
@@ -31,5 +48,5 @@ export const animateWithGsapTimeLine = (
       ease: 'power2.inOut',
     },
     '<',
-  )
+  );
 };

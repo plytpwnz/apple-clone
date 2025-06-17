@@ -22,8 +22,8 @@ export const Hero: React.FC = () => {
   }, []);
 
   useGSAP(() => {
-    gsap.to('#hero', { opacity: 1, delay: 2, });
-    gsap.to('#cta', { opacity: 1, y: -50, delay: 2,  });
+    gsap.to('#hero', { opacity: 1, delay: 2 });
+    gsap.to('#cta', { opacity: 1, y: -50, delay: 2 });
   }, []);
 
   return (
@@ -32,7 +32,7 @@ export const Hero: React.FC = () => {
         <p
           id="hero"
           className="text-center font-semibold text-3xl text-gray-100 opacity-0 max-md:mb-10">
-          Iphone 15 Pro
+          iPhone 15 Pro
         </p>
 
         <div className="md:w-10/12 w-9/12">
